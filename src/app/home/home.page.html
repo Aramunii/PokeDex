@@ -1,6 +1,11 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Pokédex</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goToFavorites()" fill="clear">
+        <ion-icon name="heart" color="danger"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

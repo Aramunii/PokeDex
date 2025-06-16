@@ -4,6 +4,13 @@
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
     <ion-title *ngIf="pokemonDetails">{{ capitalizeFirstLetter(pokemonDetails.name) }}</ion-title>
+    <ion-buttons slot="end" *ngIf="pokemonDetails">
+      <ion-button (click)="toggleFavorite()" fill="clear">
+        <ion-icon [name]="isFavorite ? 'heart' : 'heart-outline'" 
+                 [color]="isFavorite ? 'danger' : 'medium'">
+        </ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -12,8 +19,6 @@
     <ion-spinner name="circles"></ion-spinner>
     <p>Carregando detalhes do Pokémon...</p>
   </div>
-
-
 
   <div *ngIf="!isLoading && !error && pokemonDetails" class="pokemon-detail-container">
     <ion-card class="detail-card">

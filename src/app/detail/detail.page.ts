@@ -21,11 +21,16 @@ import {
   IonItemDivider, 
   IonChip, 
   IonList, 
-  IonProgressBar 
+  IonProgressBar,
+  IonButton,
+  IonIcon
 } from '@ionic/angular/standalone';
 import { ActivatedRoute } from '@angular/router';
 import { PokemonService } from '../services/pokemon.service';
 import { HelpersService } from '../services/helpers.service';
+import { FavoritesService, FavoritePokemon } from '../services/favorites.service';
+import { addIcons } from 'ionicons';
+import { heart, heartOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-detail',
@@ -54,7 +59,9 @@ import { HelpersService } from '../services/helpers.service';
     IonItemDivider,
     IonChip,
     IonList,
-    IonProgressBar
+    IonProgressBar,
+    IonButton,
+    IonIcon
   ]
 })
 export class DetailPage implements OnInit {
@@ -62,12 +69,16 @@ export class DetailPage implements OnInit {
   pokemonDetails: any = null;
   isLoading = true;
   error: string | null = null;
+  isFavorite = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private pokemonService: PokemonService,
-    private helpersService: HelpersService
-  ) { }
+    private helpersService: HelpersService,
+    private favoritesService: FavoritesService
+  ) {
+    addIcons({ heart, heartOutline });
+  }
 
   ngOnInit() {
     this.pokemonId = this.activatedRoute.snapshot.paramMap.get('id');
@@ -83,6 +94,7 @@ export class DetailPage implements OnInit {
       next: (data) => {
         this.pokemonDetails = data;
         this.isLoading = false;
+        this.checkFavoriteStatus();
       },
       error: (err) => {
         console.error('Erro ao carregar detalhes do Pokémon:', err);
@@ -92,8 +104,28 @@ export class DetailPage implements OnInit {
     });
   }
 
+  checkFavoriteStatus() {
+    if (this.pokemonDetails) {
+      this.isFavorite = this.favoritesService.isFavorite(this.pokemonDetails.id.toString());
+    }
+  }
+
+  toggleFavorite() {
+    if (this.pokemonDetails) {
+      const favoritePokemon: FavoritePokemon = {
+        id: this.pokemonDetails.id.toString(),
+        name: this.pokemonDetails.name,
+        imageUrl: this.getPokemonImageUrl(this.pokemonDetails.id),
+        types: this.pokemonDetails.types
+      };
+      
+      this.favoritesService.toggleFavorite(favoritePokemon);
+      this.checkFavoriteStatus();
+    }
+  }
+
   getPokemonImageUrl(id: string): string {
-      return this.helpersService.getPokemonImageUrl(id);
+    return this.helpersService.getPokemonImageUrl(id);
   }
 
   capitalizeFirstLetter(str: string): string {
@@ -101,7 +133,6 @@ export class DetailPage implements OnInit {
   }
 
   getTypeColor(type: string): string {
-      return this.helpersService.getTypeColor(type);
+    return this.helpersService.getTypeColor(type);
   }
-
 }

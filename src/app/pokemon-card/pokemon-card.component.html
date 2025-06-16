@@ -4,4 +4,14 @@
     <ion-card-title>{{ capitalizeFirstLetter(pokemon.name) }}</ion-card-title>
     <ion-card-subtitle>#{{pokemon.id | number:'3.0-0'}}</ion-card-subtitle>
   </ion-card-header>
+  <ion-card-content>
+    <div class="types">
+      <ion-chip *ngFor="let type of pokemon.types" [style.background-color]="getTypeColor(type.type.name)">
+        {{ capitalizeFirstLetter(type.type.name) }}
+      </ion-chip>
+    </div>
+    <ion-button fill="clear" (click)="toggleFavorite($event)" class="favorite-btn">
+      <ion-icon [name]="isFavorite ? 'heart' : 'heart-outline'" [color]="isFavorite ? 'danger' : 'medium'"></ion-icon>
+    </ion-button>
+  </ion-card-content>
 </ion-card> 

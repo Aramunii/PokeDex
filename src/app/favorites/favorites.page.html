@@ -1,0 +1,52 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+      <ion-button (click)="goBack()" fill="clear">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Meus Favoritos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div *ngIf="favorites.length === 0" class="empty-state">
+    <ion-icon name="heart-outline" size="large"></ion-icon>
+    <h2>Nenhum Pokémon favoritado</h2>
+    <p>Você ainda não favoritou nenhum Pokémon. Explore a lista e adicione seus favoritos!</p>
+    <ion-button routerLink="/home">Explorar Pokémon</ion-button>
+  </div>
+
+  <div *ngIf="favorites.length > 0" class="favorites-container">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6" size-md="4" size-lg="3" *ngFor="let pokemon of favorites">
+          <ion-card class="favorite-card" (click)="goToPokemonDetail(pokemon.id)">
+            <ion-img [src]="getPokemonImageUrl(pokemon.id)" class="pokemon-image"></ion-img>
+            <ion-card-header>
+              <ion-card-title>{{ capitalizeFirstLetter(pokemon.name) }}</ion-card-title>
+              <ion-card-subtitle>#{{ pokemon.id | number:'3.0-0' }}</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="types">
+                <ion-chip *ngFor="let type of pokemon.types" 
+                         [style.background-color]="getTypeColor(type.type.name)">
+                  {{ capitalizeFirstLetter(type.type.name) }}
+                </ion-chip>
+              </div>
+              <ion-button 
+                fill="clear" 
+                color="danger" 
+                (click)="removeFromFavorites(pokemon); $event.stopPropagation()"
+                class="remove-button">
+                <ion-icon name="heart" slot="icon-only"></ion-icon>
+                Remover dos favoritos
+              </ion-button>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content> 

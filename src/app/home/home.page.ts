@@ -9,12 +9,17 @@ import {
   IonRow,
   IonCol,
   IonInfiniteScroll,
-  IonInfiniteScrollContent
+  IonInfiniteScrollContent,
+  IonButton,
+  IonIcon,
+  IonButtons
 } from '@ionic/angular/standalone';
 import { PokemonService } from '../services/pokemon.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PokemonCardComponent } from '../pokemon-card/pokemon-card.component';
+import { addIcons } from 'ionicons';
+import { heart } from 'ionicons/icons';
 
 @Component({
   selector: 'app-home',
@@ -32,6 +37,9 @@ import { PokemonCardComponent } from '../pokemon-card/pokemon-card.component';
     IonCol,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
+    IonButton,
+    IonIcon,
+    IonButtons,
     PokemonCardComponent
   ],
 })
@@ -41,7 +49,9 @@ export class HomePage implements OnInit {
   offset: number = 0;
   limit: number = 20;
 
-  constructor(private pokemonService: PokemonService,private router: Router) {}
+  constructor(private pokemonService: PokemonService,private router: Router) {
+    addIcons({ heart });
+  }
 
   ngOnInit(): void {
     this.loadPokemon();
@@ -78,5 +88,9 @@ export class HomePage implements OnInit {
 
   goToPokemonDetail(id: string){
     this.router.navigate(['/pokemon-detail',id]);
+  }
+
+  goToFavorites() {
+    this.router.navigate(['/favorites']);
   }
 }
