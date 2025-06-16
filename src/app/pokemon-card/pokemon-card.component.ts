@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonImg } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
+import { HelpersService } from '../services/helpers.service';
 
 @Component({
   selector: 'app-pokemon-card',
@@ -13,15 +14,15 @@ export class PokemonCardComponent implements OnInit {
 
   @Input() pokemon: any;
 
-  constructor() { }
+  constructor(private helpersService: HelpersService ) { }
 
   ngOnInit() {}
 
   getPokemonImageUrl(id: string): string {
-    return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
+      return this.helpersService.getPokemonImageUrl(id);
   }
 
   capitalizeFirstLetter(str: string): string {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+    return this.helpersService.capitalizeFirstLetter(str);
   }
 }

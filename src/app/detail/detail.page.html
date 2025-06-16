@@ -1,13 +1,58 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>detail</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title *ngIf="pokemonDetails">{{ capitalizeFirstLetter(pokemonDetails.name) }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">detail</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div *ngIf="isLoading" class="loading-state ion-text-center">
+    <ion-spinner name="circles"></ion-spinner>
+    <p>Carregando detalhes do Pokémon...</p>
+  </div>
+
+
+
+  <div *ngIf="!isLoading && !error && pokemonDetails" class="pokemon-detail-container">
+    <ion-card class="detail-card">
+      <ion-img [src]="getPokemonImageUrl(pokemonDetails.id)" alt="{{ pokemonDetails.name }}" class="detail-image"></ion-img>
+
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">{{ capitalizeFirstLetter(pokemonDetails.name) }}</ion-card-title>
+        <ion-card-subtitle class="ion-text-center">#{{ pokemonDetails.id | number:'3.0-0' }}</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item>
+          <ion-label>Height:</ion-label>
+          <ion-text>{{ pokemonDetails.height / 10 }} m</ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>Weight:</ion-label>
+          <ion-text>{{ pokemonDetails.weight / 10 }} kg</ion-text>
+        </ion-item>
+
+        <ion-item-divider>Types</ion-item-divider>
+        <ion-chip *ngFor="let typeInfo of pokemonDetails.types" [style.background]="getTypeColor(typeInfo.type.name)">
+          {{ capitalizeFirstLetter(typeInfo.type.name) }}
+        </ion-chip>
+
+        <ion-item-divider>Abilities</ion-item-divider>
+        <ion-item *ngFor="let abilityInfo of pokemonDetails.abilities">
+          <ion-label>{{ capitalizeFirstLetter(abilityInfo.ability.name) }}</ion-label>
+        </ion-item>
+
+        <ion-item-divider>Stats</ion-item-divider>
+        <ion-list>
+          <ion-item *ngFor="let statInfo of pokemonDetails.stats">
+            <ion-label>{{ capitalizeFirstLetter(statInfo.stat.name.replace('-', ' ')) }}:</ion-label>
+            <ion-text>{{ statInfo.base_stat }}</ion-text>
+            <ion-progress-bar [value]="statInfo.base_stat / 255" color="primary"></ion-progress-bar>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>
