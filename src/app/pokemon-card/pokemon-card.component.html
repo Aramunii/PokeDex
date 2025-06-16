@@ -1,3 +1,7 @@
-<p>
-  pokemon-card works!
-</p>
+<ion-card class="pokemon-card">
+  <ion-img [src]="getPokemonImageUrl(pokemon.id)" class="pokemon-image"></ion-img>
+  <ion-card-header>
+    <ion-card-title>{{ capitalizeFirstLetter(pokemon.name) }}</ion-card-title>
+    <ion-card-subtitle>#{{pokemon.id | number:'3.0-0'}}</ion-card-subtitle>
+  </ion-card-header>
+</ion-card> 

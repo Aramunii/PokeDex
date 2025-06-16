@@ -1,12 +1,82 @@
-import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
+import { Component, OnInit } from '@angular/core';
+import { 
+  IonHeader, 
+  IonToolbar, 
+  IonTitle, 
+  IonContent, 
+  InfiniteScrollCustomEvent,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent
+} from '@ionic/angular/standalone';
+import { PokemonService } from '../services/pokemon.service';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { PokemonCardComponent } from '../pokemon-card/pokemon-card.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent],
+  standalone: true,
+  imports: [
+    CommonModule,
+    IonHeader, 
+    IonToolbar, 
+    IonTitle, 
+    IonContent,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
+    PokemonCardComponent
+  ],
 })
-export class HomePage {
-  constructor() {}
+export class HomePage implements OnInit {
+
+  pokemonList: any[] = [];
+  offset: number = 0;
+  limit: number = 20;
+
+  constructor(private pokemonService: PokemonService,private router: Router) {}
+
+  ngOnInit(): void {
+    this.loadPokemon();
+  }
+
+  loadPokemon(event?: InfiniteScrollCustomEvent){
+    this.pokemonService.getPokemonList(this.offset,this.limit).subscribe({
+      next: (data) =>{
+        data.results.forEach((pokemon: any) =>{
+          const id = this.pokemonService.getPokemonIdFromUrl(pokemon.url);
+          this.pokemonList.push({ ...pokemon,id });
+        });
+        this.offset += this.limit;
+
+        if(event){
+          event.target.complete();
+          if(data.next === null){ 
+            event.target.disabled = true;
+          }
+        }
+      },
+      error: (err) =>{
+        console.error("Erro ao carregar a lista de Pokémon",err);
+        if(event){
+          event.target.complete();
+        }
+      }
+    });
+  }
+
+  onIonInfinite(event: InfiniteScrollCustomEvent){
+    this.loadPokemon(event);
+  }
+
+  goToPokemonDetail(id: string){
+    this.router.navigate(['/pokemon-detail',id]);
+  }
 }

@@ -11,7 +11,7 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'detail',
+    path: 'pokemon-detail/:id',
     loadComponent: () => import('./detail/detail.page').then( m => m.DetailPage)
   },
 ];
